@@ -3,425 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EHowTang website</title>
+    <title>EHow_PORTFOLIO // SYSTEM</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
     <style>
-        /* 重置默認樣式 */
-        * {
+        /* --- 0. 全域變數定義 --- */
+        :root {
+            --bg-color: #0a0a0a;       /* 深黑底 */
+            --text-main: #e0e0e0;      /* 灰白字 */
+            --accent: #ccff00;         /* 絕區零酸性綠 */
+            --line-color: #333333;     /* 裝飾線深灰 */
+            --ui-bg: #111111;          /* UI背景 */
+        }
+
+        body {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Share Tech Mono', monospace;
+            overflow: hidden; /* 禁止視窗出現捲軸，強制用我們定義的容器 */
+            height: 100vh;
+            width: 100vw;
         }
 
-        /* 基礎樣式 */
-        body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-
-        /* 導航欄 */
-        nav {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem 0;
+        /* --- 1. 背景裝飾 (掃描線 + 網格) --- */
+        .crt-overlay {
             position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none; /* 讓滑鼠穿透 */
+            z-index: 999;
         }
 
-        nav ul {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
+        /* --- 2. LOGO 設計 (EHow) --- */
+        .brand-logo {
+            position: fixed;
+            top: 5vh;
+            left: 5vw;
+            z-index: 100; /* 永遠浮在最上面 */
+            
+            /* 設計感排版 */
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: clamp(2rem, 8vw, 4rem); /* 響應式大小，約佔畫面 10% 寬度 */
+            color: var(--text-main);
+            text-transform: none; /* 確保大小寫依照 EHow */
+            letter-spacing: -2px;
+            
+            /* 裝飾線條 */
+            border-left: 5px solid var(--accent);
+            padding-left: 15px;
+            line-height: 0.9;
         }
 
-        nav a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-        }
-
-        nav a:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        /* 主要內容區域 */
-        main {
-            margin-top: 80px;
-            padding: 2rem;
-        }
-
-        /* 區塊通用樣式 */
-        section {
-            max-width: 1200px;
-            margin: 0 auto 4rem;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 3rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            opacity: 0;
-            animation: fadeInUp 0.8s ease forwards;
-        }
-
-        section:nth-child(2) { animation-delay: 0.2s; }
-        section:nth-child(3) { animation-delay: 0.4s; }
-        section:nth-child(4) { animation-delay: 0.6s; }
-        section:nth-child(5) { animation-delay: 0.8s; }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* 首頁區塊 */
-        #home {
-            text-align: center;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .profile-img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            margin: 0 auto 2rem;
-            background: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            color: #667eea;
-            border: 5px solid rgba(255,255,255,0.3);
-        }
-
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, #fff, #f0f0f0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            margin-bottom: 2rem;
-        }
-
-        /* 技能區塊 */
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .skill-item {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 2rem;
-            border-radius: 15px;
-            text-align: center;
-            transform: translateY(0);
-            transition: all 0.3s ease;
-        }
-
-        .skill-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
-        }
-
-        .skill-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        /* 專案區塊 */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .project-card {
-            border: 2px solid #e0e0e0;
-            border-radius: 15px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        .project-card:hover {
-            border-color: #667eea;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
-        }
-
-        /* 聯絡表單 */
-        .contact-form {
-            max-width: 600px;
-            margin: 2rem auto 0;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        label {
+        .brand-logo span {
             display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #333;
+            font-size: 0.4em; /* 副標題小字 */
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--accent);
+            letter-spacing: 2px;
+            margin-top: 5px;
         }
 
-        input, textarea {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
+        /* --- 3. 橫向捲軸容器 (核心邏輯) --- */
+        .scroll-wrapper {
+            display: flex;
+            overflow-x: auto;      /* 允許橫向滑動 */
+            overflow-y: hidden;    /* 禁止直向滑動 */
+            scroll-snap-type: x mandatory; /* 啟動卡片吸附效果 */
+            height: 100vh;
+            width: 100vw;
+            
+            /* 隱藏預設捲軸 */
+            scrollbar-width: none; /* Firefox */
+        }
+        .scroll-wrapper::-webkit-scrollbar { 
+            display: none; /* Chrome/Safari */
         }
 
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: #667eea;
+        /* 每一頁的設定 */
+        .section {
+            flex: 0 0 100vw;       /* 每一頁寬度固定 100% 視窗寬 */
+            height: 100vh;
+            scroll-snap-align: center; /* 滑動時自動對齊中間 */
+            
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
         }
 
-        .btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        /* 響應式設計 */
-        @media (max-width: 768px) {
-            nav ul {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            section {
-                padding: 2rem 1rem;
-                margin-bottom: 2rem;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            .skills-grid,
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* 頁尾 */
-        footer {
-            background: rgba(255, 255, 255, 0.95);
+        /* --- 4. 中間內容區 (作品集預覽) --- */
+        .content-card {
+            width: 60%;
+            height: 50%;
+            background: rgba(20, 20, 20, 0.9);
+            border: 1px solid var(--line-color);
+            position: relative;
+            
+            /* 工業風切角 */
+            clip-path: polygon(
+                0 0, 100% 0, 
+                100% 90%, 95% 100%, 
+                0 100%
+            );
+            
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            padding: 2rem;
-            margin-top: 4rem;
-            backdrop-filter: blur(10px);
+            transition: transform 0.3s;
         }
+
+        .content-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(204, 255, 0, 0.1);
+        }
+
+        .card-number {
+            position: absolute;
+            top: -20px;
+            left: 0;
+            font-size: 4rem;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.05); /* 超大背景字 */
+            font-family: 'Orbitron';
+        }
+
+        h2 { margin: 0; font-size: 2rem; color: white; }
+        p { color: #888; margin-top: 10px; max-width: 80%; }
+
+        /* --- 5. 底部 UI (5個功能點 + 連線) --- */
+        .bottom-ui-container {
+            position: fixed;
+            bottom: 5vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%; /* UI 總寬度 */
+            height: 60px;
+            z-index: 100;
+            
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* 那條水平細黑線 */
+        .connecting-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #000; /* 全黑線 */
+            border-bottom: 1px solid #333; /* 加一點反光邊緣讓它在黑底看得到 */
+            z-index: -1;
+        }
+
+        /* 5個 UI 按鈕 */
+        .ui-node {
+            width: 40px;
+            height: 40px;
+            background-color: #000;
+            border: 1px solid #444;
+            color: #666;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.3s;
+            
+            /* 菱形設計 */
+            transform: rotate(45deg); 
+        }
+
+        /* 裡面的文字轉回來，不然會歪著 */
+        .ui-node span {
+            transform: rotate(-45deg);
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .ui-node:hover {
+            background-color: var(--accent);
+            border-color: var(--accent);
+            color: #000;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        /* 頁面指示器 (提示可以左右滑) */
+        .scroll-hint {
+            position: fixed;
+            bottom: 15vh;
+            width: 100%;
+            text-align: center;
+            color: #444;
+            font-size: 0.8rem;
+            animation: blink 2s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
     </style>
 </head>
 <body>
-    <!-- 導航欄 -->
-    <nav>
-        <ul>
-            <li><a href="#home">首頁</a></li>
-            <li><a href="#about">關於我</a></li>
-            <li><a href="#skills">技能</a></li>
-            <li><a href="#projects">專案</a></li>
-            <li><a href="#contact">聯絡</a></li>
-        </ul>
-    </nav>
 
-    <!-- 主要內容 -->
-    <main>
-        <!-- 首頁區塊 -->
-        <section id="home">
-            <div class="profile-img">👨‍💻</div>
-            <h1>EHowTang</h1>
-            <p class="subtitle">Communication Engineer</p>
-            <p>Hi!I'm EHow Tang.</p>
-        </section>
+    <div class="crt-overlay"></div>
 
-        <!-- 關於我 -->
-        <section id="about">
-            <h2>關於我</h2>
-            <p>我是一位充滿熱忱的網頁開發者，專精於前端技術和用戶體驗設計。我相信好的設計不僅要美觀，更要實用且易於使用。</p>
-            <p>我的目標是創造能夠真正幫助人們解決問題的數位產品，並持續學習最新的技術來提升自己的能力。</p>
-        </section>
+    <div class="brand-logo">
+        EHow
+        <span>DESIGN // SYSTEM</span>
+    </div>
 
-        <!-- 技能 -->
-        <section id="skills">
-            <h2>我的技能</h2>
-            <div class="skills-grid">
-                <div class="skill-item">
-                    <div class="skill-icon">🌐</div>
-                    <h3>HTML & CSS</h3>
-                    <p>精通語義化 HTML 和現代 CSS，包括 Grid、Flexbox 和動畫效果</p>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon">⚡</div>
-                    <h3>JavaScript</h3>
-                    <p>熟悉 ES6+ 語法，能創建互動性強的網頁應用程式</p>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon">📱</div>
-                    <h3>響應式設計</h3>
-                    <p>設計適合各種裝置的網頁，提供最佳用戶體驗</p>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon">🎨</div>
-                    <h3>UI/UX 設計</h3>
-                    <p>關注用戶體驗，創造直觀且美觀的介面設計</p>
-                </div>
+    <div class="scroll-wrapper">
+        
+        <section class="section" id="page1">
+            <div class="content-card">
+                <div class="card-number">01</div>
+                <h2>WELCOME</h2>
+                <p>拖曳或滾動以瀏覽系統</p>
+                <p style="color: var(--accent); margin-top:20px;">>> INITIALIZING...</p>
             </div>
         </section>
 
-        <!-- 專案 -->
-        <section id="projects">
-            <h2>我的專案</h2>
-            <div class="projects-grid">
-                <div class="project-card">
-                    <h3>專案一：響應式網站</h3>
-                    <p>使用 HTML5、CSS3 和 JavaScript 創建的完全響應式網站，適合各種螢幕尺寸。</p>
-                    <a href="#" class="btn">查看專案</a>
-                </div>
-                <div class="project-card">
-                    <h3>專案二：互動式網頁應用</h3>
-                    <p>結合現代前端技術，創造具有豐富互動效果的單頁應用程式。</p>
-                    <a href="#" class="btn">查看專案</a>
-                </div>
-                <div class="project-card">
-                    <h3>專案三：電商網站</h3>
-                    <p>功能完整的電子商務網站，包含購物車、結帳流程和管理後台。</p>
-                    <a href="#" class="btn">查看專案</a>
-                </div>
+        <section class="section" id="page2">
+            <div class="content-card">
+                <div class="card-number">02</div>
+                <h2>PROJECT_ALPHA</h2>
+                <p>嵌入式系統開發展示</p>
             </div>
         </section>
 
-        <!-- 聯絡我 -->
-        <section id="contact">
-            <h2>聯絡我</h2>
-            <p>有任何問題或合作機會，歡迎與我聯絡！</p>
-            <form class="contact-form" id="contactForm">
-                <div class="form-group">
-                    <label for="name">姓名</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">電子郵件</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="message">訊息</label>
-                    <textarea id="message" name="message" rows="5" required></textarea>
-                </div>
-                <button type="submit" class="btn">發送訊息</button>
-            </form>
+        <section class="section" id="page3">
+            <div class="content-card">
+                <div class="card-number">03</div>
+                <h2>WEB_DESIGN</h2>
+                <p>前端介面實驗</p>
+            </div>
         </section>
-    </main>
 
-    <!-- 頁尾 -->
-    <footer>
-        <p>&copy; 2025 你的姓名. 版權所有.</p>
-    </footer>
+        <section class="section" id="page4">
+            <div class="content-card">
+                <div class="card-number">04</div>
+                <h2>HISTORY</h2>
+                <p>學歷與競賽紀錄</p>
+            </div>
+        </section>
+    </div>
+
+    <div class="scroll-hint">< < < SCROLL / SWIPE > > ></div>
+
+    <div class="bottom-ui-container">
+        <div class="connecting-line"></div>
+        
+        <div class="ui-node" title="Home"><span>01</span></div>
+        <div class="ui-node" title="About"><span>02</span></div>
+        <div class="ui-node" title="Works"><span>03</span></div>
+        <div class="ui-node" title="Blog"><span>04</span></div>
+        <div class="ui-node" title="Contact"><span>05</span></div>
+    </div>
 
     <script>
-        // 平滑滾動效果
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
+        // 簡單的腳本：讓底部 UI 按鈕點擊後可以滑動到對應頁面
+        const wrapper = document.querySelector('.scroll-wrapper');
+        const nodes = document.querySelectorAll('.ui-node');
+        const windowWidth = window.innerWidth;
+
+        nodes.forEach((node, index) => {
+            node.addEventListener('click', () => {
+                // 計算要滑動的位置：索引 * 螢幕寬度
+                wrapper.scrollTo({
+                    left: index * windowWidth,
+                    behavior: 'smooth' // 平滑滾動
+                });
             });
-        });
-
-        // 表單提交處理
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // 獲取表單數據
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
-            
-            // 簡單驗證
-            if (name && email && message) {
-                alert('謝謝您的訊息！我會盡快回覆您。');
-                this.reset();
-            } else {
-                alert('請填寫所有欄位。');
-            }
-        });
-
-        // 滾動時導航欄效果
-        window.addEventListener('scroll', function() {
-            const nav = document.querySelector('nav');
-            if (window.scrollY > 100) {
-                nav.style.background = 'rgba(255, 255, 255, 0.98)';
-            } else {
-                nav.style.background = 'rgba(255, 255, 255, 0.95)';
-            }
-        });
-
-        // 技能卡片互動效果
-        document.querySelectorAll('.skill-item').forEach(item => {
-            item.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-5px) scale(1.02)';
-            });
-            
-            item.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0) scale(1)';
-            });
-        });
-
-        // 載入動畫
-        window.addEventListener('load', function() {
-            document.body.style.opacity = '1';
         });
     </script>
-</body>
 
+</body>
 </html>
