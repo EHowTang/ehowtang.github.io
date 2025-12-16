@@ -3,18 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EHow_PORTFOLIO // SYSTEM</title>
+    <title>EHow_Tang Personal-Website</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://unpkg.com/augmented-ui@2/augmented-ui.min.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
     <style>
         /* --- 0. 全域變數定義 --- */
         :root {
-            --bg-color: #0a0a0a;       /* 深黑底 */
+            --bg-color: #080808;       /* 深黑底 */
             --text-main: #e0e0e0;      /* 灰白字 */
-            --accent: #ccff00;         /* 絕區零酸性綠 */
+            --accent: #ccff00;         /* 酸性綠 */
             --line-color: #333333;     /* 裝飾線深灰 */
             --ui-bg: #111111;          /* UI背景 */
         }
@@ -25,12 +28,36 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             font-family: 'Share Tech Mono', monospace;
-            overflow: hidden; /* 禁止視窗出現捲軸，強制用我們定義的容器 */
+            overflow: hidden;
             height: 100vh;
             width: 100vw;
+
+            background-image: 
+                /* Layer 1: EHow Tang (上層) */
+                /* viewBox='0 0 100 100' -> 縮小這個框框可以讓字更密，但我用 background-size 控制就好 */
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ctext x='50%25' y='50%25' font-family='Share Tech Mono, monospace' font-weight='bold' font-size='26' fill='%23222222' transform='rotate(-45 50 50)' text-anchor='middle' dominant-baseline='middle' opacity='0.3'%3EEHow%20Tang%3C/text%3E%3C/svg%3E"),
+                
+                /* Layer 2: SYSTEM.ONLINE (下層) */
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ctext x='50%25' y='50%25' font-family='Share Tech Mono, monospace' font-size='13' fill='%23222222' transform='rotate(-45 50 50)' text-anchor='middle' dominant-baseline='middle' opacity='0.3'%3ESYSTEM.ONLINE%3C/text%3E%3C/svg%3E");
+
+            /* --- 關鍵設定 1: 尺寸鎖定 --- */
+            /*
+            數值越小 = 字越密集 (現在設 90px 很密)
+            數值越大 = 字越稀疏
+            */
+            background-size: 
+                180px 180px,  /* Layer 1 密度 */
+                180px 180px;  /* Layer 2 密度 (必須相同) */
+
+            /* --- 關鍵設定 2: 位置錯開 (交錯排列) --- */
+            background-position: 
+                0 0,           /* Layer 1 從原點開始 */
+                0px 40px;     /* Layer 2 往右下移 */
+            
+            background-repeat: repeat, repeat;
         }
 
-        /* --- 1. 背景裝飾 (掃描線 + 網格) --- */
+        /* --- 1. 背景裝飾 (CRT 掃描線) --- */
         .crt-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -38,26 +65,25 @@
                 linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
                 linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
             background-size: 100% 2px, 3px 100%;
-            pointer-events: none; /* 讓滑鼠穿透 */
+            pointer-events: none;
             z-index: 999;
         }
 
-        /* --- 2. LOGO 設計 (EHow) --- */
+        /* --- 2. LOGO 設計 --- */
         .brand-logo {
             position: fixed;
             top: 5vh;
             left: 5vw;
-            z-index: 100; /* 永遠浮在最上面 */
+            z-index: 100;
             
-            /* 設計感排版 */
             font-family: 'Orbitron', sans-serif;
             font-weight: 900;
-            font-size: clamp(2rem, 8vw, 4rem); /* 響應式大小，約佔畫面 10% 寬度 */
+            font-size: clamp(2rem, 9vw, 4rem);
             color: var(--text-main);
-            text-transform: none; /* 確保大小寫依照 EHow */
+            text-transform: none;
             letter-spacing: -2px;
+            transform: skewX(-20deg);
             
-            /* 裝飾線條 */
             border-left: 5px solid var(--accent);
             padding-left: 15px;
             line-height: 0.9;
@@ -65,89 +91,149 @@
 
         .brand-logo span {
             display: block;
-            font-size: 0.4em; /* 副標題小字 */
+            font-size: 0.4em;
             font-family: 'Share Tech Mono', monospace;
             color: var(--accent);
             letter-spacing: 2px;
             margin-top: 5px;
         }
 
-        /* --- 3. 橫向捲軸容器 (核心邏輯) --- */
+        /* --- 3. 橫向捲軸容器 --- */
         .scroll-wrapper {
             display: flex;
-            overflow-x: auto;      /* 允許橫向滑動 */
-            overflow-y: hidden;    /* 禁止直向滑動 */
-            scroll-snap-type: x mandatory; /* 啟動卡片吸附效果 */
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
             height: 100vh;
             width: 100vw;
-            
-            /* 隱藏預設捲軸 */
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none;
         }
         .scroll-wrapper::-webkit-scrollbar { 
-            display: none; /* Chrome/Safari */
+            display: none;
         }
 
-        /* 每一頁的設定 */
         .section {
-            flex: 0 0 100vw;       /* 每一頁寬度固定 100% 視窗寬 */
+            flex: 0 0 100vw;
             height: 100vh;
-            scroll-snap-align: center; /* 滑動時自動對齊中間 */
-            
+            scroll-snap-align: center;
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
         }
 
-        /* --- 4. 中間內容區 (作品集預覽) --- */
+        /* --- 4. 中間內容區 (修復邊框與背光邏輯) --- */
         .content-card {
             width: 60%;
             height: 50%;
-            background: rgba(20, 20, 20, 0.9);
-            border: 1px solid var(--line-color);
             position: relative;
             
-            /* 工業風切角 */
-            clip-path: polygon(
-                0 0, 100% 0, 
-                100% 90%, 95% 100%, 
+            --clip-path-code: polygon(
+                0 0, 
+                100% 0, 
+                100% calc(100% - 40px), 
+                calc(100% - 40px) 100%, 
                 0 100%
             );
             
+            clip-path: var(--clip-path-code);
+
+            /* 【關鍵 1】父層背景設為灰色 -> 這就是你的邊框顏色 */
+            background: var(--line-color);
+            
+            /* 移除標準 border，避免切角處斷裂 */
+            border: none;
+
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            transition: transform 0.3s;
+            
+            /* 邊框變色動畫 */
+            transition: transform 0.3s, background-color 0.3s;
+            
+            z-index: 10; 
         }
 
+        /* --- Layer 1: 綠色背光層 (最底層) --- */
+        .content-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            
+            clip-path: var(--clip-path-code);
+            
+            /* 預設透明 */
+            background: transparent;
+            
+            /* 放在最底層 (Z-index -2) */
+            z-index: -2; 
+            
+            transition: all 0.3s ease-out;
+        }
+
+        /* --- Layer 2: 黑色內容層 (中間層) --- */
+        .content-card::after {
+            content: '';
+            position: absolute;
+            
+            /* 【關鍵 2】四周內縮 2px -> 讓父層的灰色露出來變成邊框 */
+            top: 2px; left: 2px; right: 2px; bottom: 2px;
+            
+            clip-path: var(--clip-path-code);
+            
+            /* 【關鍵 3】設為純黑或深色不透明，擋住背後綠光穿透 */
+            background: #131313; 
+            
+            /* 放在背光層前面，文字後面 */
+            z-index: -1; 
+        }
+
+        /* --- Hover 互動效果 --- */
+
+        /* 1. 父層動作：上浮 + 邊框變色 */
         .content-card:hover {
-            border-color: var(--accent);
-            box-shadow: 0 0 15px rgba(204, 255, 0, 0.1);
+            transform: translateY(-10px) scale(1.02);
+            /* 當滑鼠移上去，父層背景變綠 -> 邊框就變綠了 */
+            background-color: var(--accent);
         }
 
+        /* 2. 背光層動作：發光擴散 (維持指定的 scale 1.05) */
+        .content-card:hover::before {
+            background: var(--accent);
+            transform: scale(1.05); 
+            filter: blur(20px);
+        }
+
+        /* 圖片容器 */
+        .img-container {
+            clip-path: var(--clip-path-code);
+            /* 圖片也要稍微內縮，避免蓋住邊框 */
+            top: 2px; left: 2px; right: 2px; bottom: 2px;
+            width: auto; height: auto;
+        }
+        
         .card-number {
             position: absolute;
-            top: -20px;
+            top: -14px;
             left: 0;
             font-size: 4rem;
             font-weight: bold;
-            color: rgba(255, 255, 255, 0.05); /* 超大背景字 */
+            color: rgba(255, 255, 255, 0.1);
             font-family: 'Orbitron';
         }
 
         h2 { margin: 0; font-size: 2rem; color: white; }
         p { color: #888; margin-top: 10px; max-width: 80%; }
 
-        /* --- 5. 底部 UI (5個功能點 + 連線) --- */
+        /* --- 5. 底部 UI --- */
         .bottom-ui-container {
             position: fixed;
             bottom: 5vh;
             left: 50%;
             transform: translateX(-50%);
-            width: 60%; /* UI 總寬度 */
+            width: 80%;
             height: 60px;
             z-index: 100;
             
@@ -156,56 +242,54 @@
             align-items: center;
         }
 
-        /* 那條水平細黑線 */
-        .connecting-line {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background-color: #000; /* 全黑線 */
-            border-bottom: 1px solid #333; /* 加一點反光邊緣讓它在黑底看得到 */
-            z-index: -1;
+        .line-segment {
+            flex-grow: 1;      
+            height: 2px;       
+            background: #333;  
+            margin: 0 15px;    
+            opacity: 0.6;
         }
 
-        /* 5個 UI 按鈕 */
         .ui-node {
-            width: 40px;
-            height: 40px;
-            background-color: #000;
-            border: 1px solid #444;
-            color: #666;
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
-            cursor: pointer;
-            transition: 0.3s;
+            transition: transform 0.3s;
+            position: relative;
             
-            /* 菱形設計 */
-            transform: rotate(45deg); 
+            --aug-border: 2px;
+            --aug-border-bg: transparent; 
+            --aug-tl: 10px;
+            --aug-br: 10px;
+            width: 50px;
+            height: 50px;
         }
 
-        /* 裡面的文字轉回來，不然會歪著 */
-        .ui-node span {
-            transform: rotate(-45deg);
-            font-size: 12px;
-            font-weight: bold;
+        .ui-node i {
+            font-size: 24px;
+            color: #666;
+            transition: transform 0.3s, color 0.3s;
         }
 
         .ui-node:hover {
-            background-color: var(--accent);
-            border-color: var(--accent);
-            color: #000;
-            box-shadow: 0 0 10px var(--accent);
+             --aug-border-bg: var(--accent);
         }
 
-        /* 頁面指示器 (提示可以左右滑) */
+        .ui-node:hover i {
+            transform: scale(1.2) translateY(-5px);
+            color: var(--accent);
+        }
+
         .scroll-hint {
             position: fixed;
             bottom: 15vh;
             width: 100%;
             text-align: center;
-            color: #444;
+            color: #e0e0e0;
             font-size: 0.8rem;
             animation: blink 2s infinite;
         }
@@ -223,11 +307,10 @@
 
     <div class="brand-logo">
         EHow
-        <span>DESIGN // SYSTEM</span>
+        <span>EHow-Tang</span>
     </div>
 
     <div class="scroll-wrapper">
-        
         <section class="section" id="page1">
             <div class="content-card">
                 <div class="card-number">01</div>
@@ -260,32 +343,58 @@
                 <p>學歷與競賽紀錄</p>
             </div>
         </section>
+
+        <section class="section" id="page5">
+            <div class="content-card">
+                <div class="card-number">05</div>
+                <h2>BOARD</h2>
+                <p>訪客留言板</p>
+            </div>
+        </section>
     </div>
 
     <div class="scroll-hint">< < < SCROLL / SWIPE > > ></div>
 
     <div class="bottom-ui-container">
-        <div class="connecting-line"></div>
+        <button class="ui-node" data-augmented-ui="tl-clip br-clip border" title="Home">
+            <i class="ph-bold ph-terminal-window"></i>
+        </button>
         
-        <div class="ui-node" title="Home"><span>01</span></div>
-        <div class="ui-node" title="About"><span>02</span></div>
-        <div class="ui-node" title="Works"><span>03</span></div>
-        <div class="ui-node" title="Blog"><span>04</span></div>
-        <div class="ui-node" title="Contact"><span>05</span></div>
+        <div class="line-segment"></div> 
+        
+        <button class="ui-node" data-augmented-ui="tl-clip br-clip border" title="About">
+            <i class="ph-bold ph-identification-card"></i>
+        </button>
+        
+        <div class="line-segment"></div> 
+        
+        <button class="ui-node" data-augmented-ui="tl-clip br-clip border" title="Works">
+            <i class="ph-bold ph-cpu"></i>
+        </button>
+        
+        <div class="line-segment"></div> 
+        
+        <button class="ui-node" data-augmented-ui="tl-clip br-clip border" title="History">
+            <i class="ph-bold ph-folder-notch-open"></i>
+        </button>
+        
+        <div class="line-segment"></div> 
+        
+        <button class="ui-node" data-augmented-ui="tl-clip br-clip border" title="Contact">
+            <i class="ph-bold ph-chat-circle-dots"></i>
+        </button>
     </div>
 
     <script>
-        // 簡單的腳本：讓底部 UI 按鈕點擊後可以滑動到對應頁面
         const wrapper = document.querySelector('.scroll-wrapper');
         const nodes = document.querySelectorAll('.ui-node');
         const windowWidth = window.innerWidth;
 
         nodes.forEach((node, index) => {
             node.addEventListener('click', () => {
-                // 計算要滑動的位置：索引 * 螢幕寬度
                 wrapper.scrollTo({
                     left: index * windowWidth,
-                    behavior: 'smooth' // 平滑滾動
+                    behavior: 'smooth'
                 });
             });
         });
